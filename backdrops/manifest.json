@@ -1,65 +1,65 @@
 {
   "netflix": {
-    "hash": "2de7e14f",
+    "hash": "56dc193f",
     "folder": "Streaming Services > Netflix",
     "images": 60,
-    "bytes": 259338,
-    "updatedAt": "2026-08-03T08:34:49.557Z"
+    "bytes": 236438,
+    "updatedAt": "2026-08-03T12:35:25.813Z"
   },
   "hbo-max": {
-    "hash": "d47a00ac",
+    "hash": "75f69dc6",
     "folder": "Streaming Services > HBO Max",
     "images": 60,
-    "bytes": 243042,
-    "updatedAt": "2026-08-03T08:34:51.449Z"
+    "bytes": 221328,
+    "updatedAt": "2026-08-03T12:35:31.320Z"
   },
   "apple-tv": {
-    "hash": "e9bf9474",
+    "hash": "2f880223",
     "folder": "Streaming Services > Apple TV",
     "images": 60,
-    "bytes": 229260,
-    "updatedAt": "2026-08-03T08:34:53.577Z"
+    "bytes": 207402,
+    "updatedAt": "2026-08-03T12:35:36.784Z"
   },
   "disney-plus": {
-    "hash": "02b639cc",
+    "hash": "cc88afc2",
     "folder": "Streaming Services > Disney+",
     "images": 60,
-    "bytes": 281424,
-    "updatedAt": "2026-08-03T08:34:55.668Z"
+    "bytes": 252084,
+    "updatedAt": "2026-08-03T12:35:41.166Z"
   },
   "prime-video": {
-    "hash": "27c82d5b",
+    "hash": "496292b9",
     "folder": "Streaming Services > Amazon Prime",
     "images": 60,
-    "bytes": 244770,
-    "updatedAt": "2026-08-03T08:34:57.716Z"
+    "bytes": 224328,
+    "updatedAt": "2026-08-03T12:35:45.968Z"
   },
   "paramount-plus": {
-    "hash": "4d4ff291",
+    "hash": "2a83a573",
     "folder": "Streaming Services > Paramount+",
     "images": 60,
-    "bytes": 259906,
-    "updatedAt": "2026-08-03T08:34:59.727Z"
+    "bytes": 236602,
+    "updatedAt": "2026-08-03T12:35:50.100Z"
   },
   "hulu": {
-    "hash": "e13c055c",
+    "hash": "16510948",
     "folder": "Streaming Services > Hulu",
     "images": 60,
-    "bytes": 267282,
-    "updatedAt": "2026-08-03T08:35:01.682Z"
+    "bytes": 239736,
+    "updatedAt": "2026-08-03T12:35:52.966Z"
   },
   "crunchyroll": {
-    "hash": "9d809bf3",
+    "hash": "013e2da3",
     "folder": "Streaming Services > Crunchyroll",
     "images": 60,
-    "bytes": 371452,
-    "updatedAt": "2026-08-03T08:35:05.185Z"
+    "bytes": 341474,
+    "updatedAt": "2026-08-03T12:36:02.228Z"
   },
   "peacock": {
-    "hash": "83947749",
+    "hash": "ef51df88",
     "folder": "Streaming Services > Peacock",
     "images": 60,
-    "bytes": 245102,
-    "updatedAt": "2026-08-03T08:35:06.963Z"
+    "bytes": 220994,
+    "updatedAt": "2026-08-03T12:36:05.354Z"
   }
 }
