@@ -88,6 +88,12 @@ serves `max-age=604800`, so a bare path would keep showing a stale image for up
 to a week; the hash changes only when the image actually changes, which makes
 updates immediate without refetching on days nothing moved.
 
+That covers the browser, but **not** the CDN: jsDelivr ignores the query string
+when caching, so the edge would keep serving the old bytes for up to its
+`s-maxage=43200` (12h) regardless of `?v=`. The workflow therefore calls
+jsDelivr's purge API for each changed file after committing. Both halves are
+needed — the purge refreshes the edge, the `?v=` refreshes clients.
+
 ### Repo configuration
 
 Secrets (Settings → Secrets and variables → Actions → **Secrets**):
