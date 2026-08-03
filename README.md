@@ -110,6 +110,9 @@ Variables (same page → **Variables**):
 | `ASSETS_BASE_URL` | base URL the generated files are served from | jsDelivr `@main/backdrops` |
 | `IMAGE_POOL_SIZE` | max images pulled across all of a folder's sources | `60` |
 | `WEBP_QUALITY` | encoder quality | `82` |
+| `ACCENT_OPACITY` | strength of the brand-coloured top-right glow | `0.46` |
+| `ACCENT_REACH` | how far across the frame the glow falls off | `0.72` |
+| `ACCENT_OVERRIDES` | `slug=#rrggbb` pairs for covers that sample badly. Hulu and Peacock are overridden by default | — |
 
 The workflow needs `permissions: contents: write` to commit the regenerated
 files back, which is already set in the workflow file.

@@ -87,6 +87,103 @@ function applyOverlay(ctx, preset, opacity, reach = 0.6, W = CANVAS_W, H = CANVA
   }
 }
 
+// Brand-coloured glow in the top-right, the counterpart to the dark left/bottom
+// gradients. A radial gradient is already smooth, so unlike a pixel-shaded
+// version this needs no blur pass.
+function applyAccentGlow(ctx, accent, W, H, { opacity = 0.46, reach = 0.72 } = {}) {
+  if (!accent) return;
+  const [r, g, b] = accent;
+  const radius = Math.hypot(W, H) * reach;
+  const grad = ctx.createRadialGradient(W, 0, 0, W, 0, radius);
+  grad.addColorStop(0, `rgba(${r},${g},${b},${opacity})`);
+  grad.addColorStop(0.45, `rgba(${r},${g},${b},${(opacity * 0.35).toFixed(3)})`);
+  grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+}
+
+function rgbToHsv(r, g, b) {
+  const rn = r / 255;
+  const gn = g / 255;
+  const bn = b / 255;
+  const max = Math.max(rn, gn, bn);
+  const min = Math.min(rn, gn, bn);
+  const delta = max - min;
+  let h = 0;
+  if (delta) {
+    if (max === rn) h = ((gn - bn) / delta) % 6;
+    else if (max === gn) h = (bn - rn) / delta + 2;
+    else h = (rn - gn) / delta + 4;
+    h /= 6;
+    if (h < 0) h += 1;
+  }
+  return [h, max ? delta / max : 0, max];
+}
+
+function hsvToRgb(h, s, v) {
+  const i = Math.floor(h * 6);
+  const f = h * 6 - i;
+  const p = v * (1 - s);
+  const q = v * (1 - f * s);
+  const t = v * (1 - (1 - f) * s);
+  const table = [
+    [v, t, p],
+    [q, v, p],
+    [p, v, t],
+    [p, q, v],
+    [t, p, v],
+    [v, p, q]
+  ][i % 6];
+  return table.map((channel) => Math.round(channel * 255));
+}
+
+// Picks the most saturated, reasonably lit colour out of a cover image, which
+// is what makes each service's backdrop carry its own brand tint.
+export function accentFromImage(image) {
+  const size = 64;
+  const canvas = createCanvas(size, size);
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(image, 0, 0, size, size);
+  const { data } = ctx.getImageData(0, 0, size, size);
+
+  const buckets = new Map();
+  for (let i = 0; i < data.length; i += 4) {
+    if (data[i + 3] < 200) continue;
+    const [h, s, v] = rgbToHsv(data[i], data[i + 1], data[i + 2]);
+    if (v < 0.18 || v > 0.97 || s < 0.25) continue;
+    const key = `${Math.round(h * 36)}:${Math.round(s * 4)}:${Math.round(v * 4)}`;
+    buckets.set(key, (buckets.get(key) || 0) + 1);
+  }
+  if (!buckets.size) return null;
+
+  let bestKey = null;
+  let bestScore = -1;
+  for (const [key, count] of buckets) {
+    const s = Number(key.split(":")[1]);
+    // Weight saturation over sheer pixel count so a large muted background
+    // does not beat a smaller, vivid brand colour.
+    const score = (s / 4) * Math.pow(count, 0.25);
+    if (score > bestScore) {
+      bestScore = score;
+      bestKey = key;
+    }
+  }
+  const [h, s, v] = bestKey.split(":").map(Number);
+  return hsvToRgb(h / 36, Math.min(1, (s / 4) * 1.1), Math.max(0.62, v / 4));
+}
+
+export function parseAccent(value) {
+  const text = String(value || "").trim().replace(/^#/, "");
+  if (/^[0-9a-f]{6}$/i.test(text)) {
+    return [0, 2, 4].map((offset) => parseInt(text.slice(offset, offset + 2), 16));
+  }
+  const parts = text.split(",").map((part) => Number(part.trim()));
+  if (parts.length === 3 && parts.every((part) => Number.isFinite(part))) {
+    return parts.map((part) => Math.max(0, Math.min(255, Math.round(part))));
+  }
+  return null;
+}
+
 // images: array of loaded node-canvas Image objects (backdrops, in priority
 // order — earlier images are placed nearer the grid's center column).
 export function renderBackdropCollage(images, settings) {
@@ -105,6 +202,9 @@ export function renderBackdropCollage(images, settings) {
     offsetY = 0,
     imageType = "backdrop",
     imageOpacity = 1,
+    accentColor = null,
+    accentOpacity = 0.46,
+    accentReach = 0.72,
     width = CANVAS_W,
     height = CANVAS_H
   } = settings;
@@ -175,6 +275,9 @@ export function renderBackdropCollage(images, settings) {
 
   ctx.restore();
   applyOverlay(ctx, overlayPreset, overlayOpacity, overlayReach, W, H);
+  // After the dark gradients so the tint sits over them, matching the
+  // reference backdrops' coloured top-right corner.
+  applyAccentGlow(ctx, accentColor, W, H, { opacity: accentOpacity, reach: accentReach });
 
   return canvas;
 }

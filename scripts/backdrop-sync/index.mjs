@@ -18,7 +18,14 @@ import { fetchTmdbBackdrops, resolveBackdropsByTmdbId } from "./sources/tmdb.mjs
 import { fetchTraktTmdbRefs } from "./sources/trakt.mjs";
 import { fetchAddonBackdrops } from "./sources/addon.mjs";
 import { resolveArtUrls } from "./sources/fanart.mjs";
-import { renderBackdropCollage, encodeWebp, loadImagesFromUrls } from "./render.mjs";
+import {
+  renderBackdropCollage,
+  encodeWebp,
+  loadImagesFromUrls,
+  accentFromImage,
+  parseAccent
+} from "./render.mjs";
+import { loadImage } from "@napi-rs/canvas";
 import { signIn, pullCollections, pushCollections } from "./nuvio.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -60,6 +67,13 @@ const LAYOUT_SETTINGS = {
   height: 1080
 };
 
+// Covers whose dominant colour is not the brand colour: Hulu's samples blue
+// against its green brand, Peacock's samples a desaturated grey.
+const DEFAULT_ACCENT_OVERRIDES = {
+  hulu: "#1ce783",
+  peacock: "#00a9ff"
+};
+
 // Keeps generated filenames aligned with the assets already in backdrops/.
 const SLUG_OVERRIDES = {
   "amazon prime": "prime-video",
@@ -91,6 +105,34 @@ function parseAddonBaseUrls(raw) {
     map[entry.slice(0, index).trim()] = entry.slice(index + 1).trim();
   }
   return map;
+}
+
+function parseAccentOverrides(raw) {
+  const map = { ...DEFAULT_ACCENT_OVERRIDES };
+  for (const part of String(raw || "").split(/[\n,]+/)) {
+    const entry = part.trim();
+    if (!entry) continue;
+    const index = entry.indexOf("=");
+    if (index <= 0) continue;
+    map[entry.slice(0, index).trim().toLowerCase()] = entry.slice(index + 1).trim();
+  }
+  return map;
+}
+
+// Brand tint for a folder: an explicit override wins, otherwise it is sampled
+// from the folder's own cover art. Falls back to no glow rather than guessing.
+async function resolveAccent(folder, slug, overrides) {
+  const override = parseAccent(overrides[slug]);
+  if (override) return override;
+  const coverUrl = folder.coverImageUrl || folder.coverImage;
+  if (!coverUrl) return null;
+  try {
+    const res = await fetch(coverUrl);
+    if (!res.ok) return null;
+    return accentFromImage(await loadImage(Buffer.from(await res.arrayBuffer())));
+  } catch {
+    return null;
+  }
 }
 
 function sourceLabel(source = {}) {
@@ -161,12 +203,15 @@ async function main() {
   const traktClientId = process.env.TRAKT_CLIENT_ID || DEFAULT_TRAKT_CLIENT_ID;
   const fanartKey = process.env.FANART_API_KEY || "";
   const addonBaseUrls = parseAddonBaseUrls(process.env.ADDON_BASE_URLS);
+  const accentOverrides = parseAccentOverrides(process.env.ACCENT_OVERRIDES);
   const nuvioEmail = requireEnv("NUVIO_EMAIL");
   const nuvioPassword = requireEnv("NUVIO_PASSWORD");
   const profileId = Number(process.env.NUVIO_PROFILE_ID || "1");
   const assetsBaseUrl = (process.env.ASSETS_BASE_URL || DEFAULT_ASSETS_BASE_URL).replace(/\/+$/, "");
   const poolSize = Number(process.env.IMAGE_POOL_SIZE || "60");
   const quality = Number(process.env.WEBP_QUALITY || "82");
+  const accentOpacity = Number(process.env.ACCENT_OPACITY || "0.46");
+  const accentReach = Number(process.env.ACCENT_REACH || "0.72");
   const force = process.env.FORCE_REGENERATE === "true";
   const collectionTitles = (process.env.TARGET_COLLECTION_TITLES || "Streaming Services").split(",");
   const folderTitles = (process.env.TARGET_FOLDER_TITLES || "").split(",");
@@ -219,7 +264,11 @@ async function main() {
 
       // Hash before any downloading — an unchanged list costs one catalog
       // request per source and nothing else.
-      const fingerprint = hashUrls(items.map((item) => item.url));
+      const accent = await resolveAccent(folder, slug, accentOverrides);
+      const fingerprint = hashUrls([
+        ...items.map((item) => item.url),
+        `accent:${accent ? accent.join(",") : "none"}`
+      ]);
       const expectedUrl = `${assetsBaseUrl}/${slug}.webp?v=${fingerprint}`;
       if (!force && manifest[slug]?.hash === fingerprint && folder.heroBackdropUrl === expectedUrl) {
         console.log(`- ${label}: unchanged (${fingerprint}), skipping`);
@@ -236,7 +285,15 @@ async function main() {
         throw new Error("no images could be downloaded/decoded");
       }
 
-      const buffer = await encodeWebp(renderBackdropCollage(images, LAYOUT_SETTINGS), quality);
+      const buffer = await encodeWebp(
+        renderBackdropCollage(images, {
+          ...LAYOUT_SETTINGS,
+          accentColor: accent,
+          accentOpacity,
+          accentReach
+        }),
+        quality
+      );
       await writeFile(join(OUT_DIR, `${slug}.webp`), buffer);
 
       folder.heroBackdropUrl = expectedUrl;
@@ -249,7 +306,8 @@ async function main() {
       };
       changed++;
       console.log(
-        `- ${label}: wrote backdrops/${slug}.webp (${images.length} images, ${Math.round(buffer.length / 1024)} KB, v=${fingerprint})`
+        `- ${label}: wrote backdrops/${slug}.webp (${images.length} images, ${Math.round(buffer.length / 1024)} KB, ` +
+          `accent=${accent ? `rgb(${accent.join(",")})` : "none"}, v=${fingerprint})`
       );
     } catch (error) {
       failures.push(`${label}: ${error.message}`);

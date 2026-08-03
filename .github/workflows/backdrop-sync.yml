@@ -50,6 +50,9 @@ jobs:
           TARGET_COLLECTION_TITLES: ${{ vars.TARGET_COLLECTION_TITLES }}
           TARGET_FOLDER_TITLES: ${{ vars.TARGET_FOLDER_TITLES }}
           ASSETS_BASE_URL: ${{ vars.ASSETS_BASE_URL }}
+          ACCENT_OVERRIDES: ${{ vars.ACCENT_OVERRIDES }}
+          ACCENT_OPACITY: ${{ vars.ACCENT_OPACITY }}
+          ACCENT_REACH: ${{ vars.ACCENT_REACH }}
           FORCE_REGENERATE: ${{ inputs.force }}
         run: npm start
 
