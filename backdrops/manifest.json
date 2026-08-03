@@ -1,0 +1,65 @@
+{
+  "netflix": {
+    "hash": "2de7e14f",
+    "folder": "Streaming Services > Netflix",
+    "images": 60,
+    "bytes": 259338,
+    "updatedAt": "2026-08-03T08:34:49.557Z"
+  },
+  "hbo-max": {
+    "hash": "d47a00ac",
+    "folder": "Streaming Services > HBO Max",
+    "images": 60,
+    "bytes": 243042,
+    "updatedAt": "2026-08-03T08:34:51.449Z"
+  },
+  "apple-tv": {
+    "hash": "e9bf9474",
+    "folder": "Streaming Services > Apple TV",
+    "images": 60,
+    "bytes": 229260,
+    "updatedAt": "2026-08-03T08:34:53.577Z"
+  },
+  "disney-plus": {
+    "hash": "02b639cc",
+    "folder": "Streaming Services > Disney+",
+    "images": 60,
+    "bytes": 281424,
+    "updatedAt": "2026-08-03T08:34:55.668Z"
+  },
+  "prime-video": {
+    "hash": "27c82d5b",
+    "folder": "Streaming Services > Amazon Prime",
+    "images": 60,
+    "bytes": 244770,
+    "updatedAt": "2026-08-03T08:34:57.716Z"
+  },
+  "paramount-plus": {
+    "hash": "4d4ff291",
+    "folder": "Streaming Services > Paramount+",
+    "images": 60,
+    "bytes": 259906,
+    "updatedAt": "2026-08-03T08:34:59.727Z"
+  },
+  "hulu": {
+    "hash": "e13c055c",
+    "folder": "Streaming Services > Hulu",
+    "images": 60,
+    "bytes": 267282,
+    "updatedAt": "2026-08-03T08:35:01.682Z"
+  },
+  "crunchyroll": {
+    "hash": "9d809bf3",
+    "folder": "Streaming Services > Crunchyroll",
+    "images": 60,
+    "bytes": 371452,
+    "updatedAt": "2026-08-03T08:35:05.185Z"
+  },
+  "peacock": {
+    "hash": "83947749",
+    "folder": "Streaming Services > Peacock",
+    "images": 60,
+    "bytes": 245102,
+    "updatedAt": "2026-08-03T08:35:06.963Z"
+  }
+}
