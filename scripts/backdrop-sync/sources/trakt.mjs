@@ -19,6 +19,68 @@ function buildHeaders(clientId) {
   };
 }
 
+// Collections can reference Trakt catalogs through an addon source, as
+// {provider: "addon", catalogId: "trakt.list.2143363"} — AIOMetadata used to
+// serve those. When the addon stops declaring them (config changed, Trakt
+// disconnected) the catalog request just returns an empty list, but the
+// underlying data is public: these endpoints need only the app's client id, no
+// OAuth. So resolve trakt.* catalog ids against Trakt directly instead.
+export function isTraktCatalogId(catalogId) {
+  return /^trakt\./i.test(String(catalogId || ""));
+}
+
+function traktTypesFor(type) {
+  const normalized = String(type || "").toLowerCase();
+  if (normalized === "series" || normalized === "tv" || normalized === "show") return ["show"];
+  if (normalized === "movie") return ["movie"];
+  return ["movie", "show"];
+}
+
+function refsFromEntries(entries, forcedKind = null) {
+  return (Array.isArray(entries) ? entries : [])
+    .map((entry) => {
+      const kind = forcedKind || (entry?.show ? "show" : entry?.movie ? "movie" : null);
+      const entity = kind === "show" ? entry?.show : entry?.movie;
+      if (!entity?.ids?.tmdb) return null;
+      return { tmdbId: entity.ids.tmdb, tmdbType: kind === "show" ? "tv" : "movie" };
+    })
+    .filter(Boolean);
+}
+
+async function traktGet(path, clientId) {
+  const res = await fetch(`${TRAKT_API_URL}${path}`, { headers: buildHeaders(clientId) });
+  const payload = await res.json().catch(() => []);
+  if (!res.ok) {
+    throw new Error(String(payload?.message || payload?.error || res.statusText || "Trakt request failed"));
+  }
+  return payload;
+}
+
+// Handles the catalog id forms the app stores: trakt.list.<id> and
+// trakt.<feed>.<movies|shows> (anticipated, trending, popular, ...).
+export async function fetchTraktCatalogRefs(source = {}, clientId, { limit = 60 } = {}) {
+  const catalogId = String(source.catalogId || "");
+  const listMatch = catalogId.match(/^trakt\.list\.(\d+)$/i);
+  if (listMatch) {
+    const types = traktTypesFor(source.type).join(",");
+    const payload = await traktGet(
+      `/lists/${listMatch[1]}/items/${types}?page=1&limit=${limit}&sort_by=rank&sort_how=asc`,
+      clientId
+    );
+    return refsFromEntries(payload);
+  }
+
+  const feedMatch = catalogId.match(/^trakt\.([a-z_]+)\.(movies|shows)$/i);
+  if (feedMatch) {
+    const [, feed, plural] = feedMatch;
+    const kind = plural.toLowerCase() === "shows" ? "shows" : "movies";
+    const payload = await traktGet(`/${kind}/${feed.toLowerCase()}?page=1&limit=${limit}`, clientId);
+    return refsFromEntries(payload, kind === "shows" ? "show" : "movie");
+  }
+
+  throw new Error(`unsupported Trakt catalog id "${catalogId}"`);
+}
+
 // source shape: { traktListId, mediaType, sortBy, sortHow } (see
 // collectionsStore.js normalizeCollectionSource's "trakt" branch)
 export async function fetchTraktTmdbRefs(source = {}, clientId) {

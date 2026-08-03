@@ -15,7 +15,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { fetchTmdbBackdrops, resolveBackdropsByTmdbId } from "./sources/tmdb.mjs";
-import { fetchTraktTmdbRefs } from "./sources/trakt.mjs";
+import { fetchTraktTmdbRefs, fetchTraktCatalogRefs, isTraktCatalogId } from "./sources/trakt.mjs";
 import { fetchAddonBackdrops } from "./sources/addon.mjs";
 import { resolveArtUrls } from "./sources/fanart.mjs";
 import {
@@ -167,6 +167,13 @@ async function fetchSourceItems(source, config) {
   }
   if (provider === "trakt") {
     const refs = await fetchTraktTmdbRefs(source, config.traktClientId);
+    return resolveBackdropsByTmdbId(refs, config.tmdbApiKey);
+  }
+  // An addon source pointing at a trakt.* catalog goes straight to Trakt: the
+  // addon returns an empty list for these once it stops declaring them, and
+  // the data behind them is public anyway.
+  if (isTraktCatalogId(source.catalogId)) {
+    const refs = await fetchTraktCatalogRefs(source, config.traktClientId);
     return resolveBackdropsByTmdbId(refs, config.tmdbApiKey);
   }
   return fetchAddonBackdrops(source, { baseUrlOverrides: config.addonBaseUrls });

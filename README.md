@@ -98,7 +98,7 @@ Secrets (Settings → Secrets and variables → Actions → **Secrets**):
 | `ADDON_BASE_URLS` | required if any folder has addon sources. Collections store the addon by id with `addonBaseUrl: null`, and the real URL lives in the app's local `installedAddonUrls` store, which has no pull RPC. Format: `aio-metadata=https://host/stremio/<config>` (comma or newline separated), or a single bare URL used for every addon source. Keep it a secret — these URLs often embed a config id |
 | `FANART_API_KEY` | optional — without it tiles fall back to plain TMDB backdrops and lose the title logos |
 | `TMDB_API_KEY` | optional — falls back to the public key already shipped in the Nuvio web client bundle |
-| `TRAKT_CLIENT_ID` | optional — falls back to the public client ID already shipped in the Nuvio web client bundle; only used if a folder has a Trakt-sourced list |
+| `TRAKT_CLIENT_ID` | optional — falls back to the public client ID already shipped in the Nuvio web client bundle. Used both for `provider: "trakt"` sources and for addon sources whose catalog id starts with `trakt.`, which are resolved against Trakt directly (public endpoints, no OAuth) |
 
 Variables (same page → **Variables**):
 
