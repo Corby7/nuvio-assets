@@ -1,0 +1,265 @@
+// Regenerates the hero backdrop for every folder in the target collection(s),
+// writes each as WebP into ../../backdrops/, and points heroBackdropUrl at the
+// jsDelivr copy.
+//
+// Efficiency notes, since this runs unattended every day:
+//   * one sign-in + one collections pull + at most one push per run
+//   * each folder's resolved image-URL list is hashed and compared against
+//     backdrops/manifest.json — unchanged folders are skipped entirely, so a
+//     quiet day does no downloading, no rendering and no commit
+//   * the hash doubles as the ?v= cache-buster, so a stable jsDelivr path can
+//     still update instantly despite its 7-day browser cache
+import { createHash } from "node:crypto";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+import { fetchTmdbBackdrops, resolveBackdropsByTmdbId } from "./sources/tmdb.mjs";
+import { fetchTraktTmdbRefs } from "./sources/trakt.mjs";
+import { fetchAddonBackdrops } from "./sources/addon.mjs";
+import { resolveArtUrls } from "./sources/fanart.mjs";
+import { renderBackdropCollage, encodeWebp, loadImagesFromUrls } from "./render.mjs";
+import { signIn, pullCollections, pushCollections } from "./nuvio.mjs";
+
+const HERE = dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = join(HERE, "..", "..");
+const OUT_DIR = join(REPO_ROOT, "backdrops");
+const MANIFEST_PATH = join(OUT_DIR, "manifest.json");
+
+function requireEnv(name) {
+  const value = process.env[name];
+  if (!value) throw new Error(`Missing required env var ${name}`);
+  return value;
+}
+
+// Public keys already shipped in the Nuvio web client bundle
+// (https://web.nuvioapp.space/nuvio.env.js) — used as defaults so this
+// script doesn't need its own TMDB/Trakt registration, but both are
+// overridable via env.
+const DEFAULT_TMDB_API_KEY = "439c478a771f35c05022f9feabcca01c";
+const DEFAULT_TRAKT_CLIENT_ID =
+  "e04d98107c4066fb86e123e320306dd4fa0309c4ea2f63235f008a48e115944b";
+
+const DEFAULT_ASSETS_BASE_URL =
+  "https://cdn.jsdelivr.net/gh/Corby7/nuvio-assets@main/backdrops";
+
+const LAYOUT_SETTINGS = {
+  angleDeg: 12,
+  gap: 12,
+  scale: 1.3,
+  radius: 10,
+  autoStagger: true,
+  stagger: 0,
+  bgColor: "#0b0b0f",
+  overlayPreset: "cinematic",
+  overlayOpacity: 0.85,
+  overlayReach: 0.6,
+  imageType: "backdrop",
+  imageOpacity: 1,
+  width: 1920,
+  height: 1080
+};
+
+// Keeps generated filenames aligned with the assets already in backdrops/.
+const SLUG_OVERRIDES = {
+  "amazon prime": "prime-video",
+  "apple tv": "apple-tv"
+};
+
+function slugify(title) {
+  const raw = String(title || "").trim().toLowerCase();
+  if (SLUG_OVERRIDES[raw]) return SLUG_OVERRIDES[raw];
+  return raw
+    .replace(/\+/g, "-plus")
+    .replace(/&/g, "-and-")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function sourceLabel(source = {}) {
+  return `${source.provider || "addon"}:${source.title || source.catalogName || source.catalogId || source.tmdbSourceType || ""}`;
+}
+
+async function fetchSourceItems(source, config) {
+  const provider = String(source.provider || "addon").toLowerCase();
+  if (provider === "tmdb") {
+    return fetchTmdbBackdrops(source, config.tmdbApiKey, config.language);
+  }
+  if (provider === "trakt") {
+    const refs = await fetchTraktTmdbRefs(source, config.traktClientId);
+    return resolveBackdropsByTmdbId(refs, config.tmdbApiKey);
+  }
+  return fetchAddonBackdrops(source);
+}
+
+// Round-robins across sources so no single list dominates the grid, dropping
+// duplicates by URL.
+function interleave(lists) {
+  const seen = new Set();
+  const merged = [];
+  const maxLen = Math.max(0, ...lists.map((list) => list.length));
+  for (let i = 0; i < maxLen; i++) {
+    for (const list of lists) {
+      const item = list[i];
+      if (!item?.url || seen.has(item.url)) continue;
+      seen.add(item.url);
+      merged.push(item);
+    }
+  }
+  return merged;
+}
+
+async function readManifest() {
+  try {
+    return JSON.parse(await readFile(MANIFEST_PATH, "utf8"));
+  } catch {
+    return {};
+  }
+}
+
+function hashUrls(urls) {
+  return createHash("sha1").update(urls.join("\n")).digest("hex").slice(0, 8);
+}
+
+function targetFolders(collections, collectionTitles, folderTitles) {
+  const wantCollection = new Set(collectionTitles.map((t) => t.trim().toLowerCase()).filter(Boolean));
+  const wantFolder = new Set(folderTitles.map((t) => t.trim().toLowerCase()).filter(Boolean));
+  const targets = [];
+  for (const collection of collections || []) {
+    if (wantCollection.size && !wantCollection.has(String(collection?.title || "").trim().toLowerCase())) {
+      continue;
+    }
+    for (const folder of collection?.folders || []) {
+      if (wantFolder.size && !wantFolder.has(String(folder?.title || "").trim().toLowerCase())) {
+        continue;
+      }
+      targets.push({ collection, folder });
+    }
+  }
+  return targets;
+}
+
+async function main() {
+  const tmdbApiKey = process.env.TMDB_API_KEY || DEFAULT_TMDB_API_KEY;
+  const traktClientId = process.env.TRAKT_CLIENT_ID || DEFAULT_TRAKT_CLIENT_ID;
+  const fanartKey = process.env.FANART_API_KEY || "";
+  const nuvioEmail = requireEnv("NUVIO_EMAIL");
+  const nuvioPassword = requireEnv("NUVIO_PASSWORD");
+  const profileId = Number(process.env.NUVIO_PROFILE_ID || "1");
+  const assetsBaseUrl = (process.env.ASSETS_BASE_URL || DEFAULT_ASSETS_BASE_URL).replace(/\/+$/, "");
+  const poolSize = Number(process.env.IMAGE_POOL_SIZE || "60");
+  const quality = Number(process.env.WEBP_QUALITY || "82");
+  const force = process.env.FORCE_REGENERATE === "true";
+  const collectionTitles = (process.env.TARGET_COLLECTION_TITLES || "Streaming Services").split(",");
+  const folderTitles = (process.env.TARGET_FOLDER_TITLES || "").split(",");
+
+  console.log("Signing in to Nuvio...");
+  const accessToken = await signIn(nuvioEmail, nuvioPassword);
+
+  console.log(`Pulling collections (profile ${profileId})...`);
+  const collections = await pullCollections(accessToken, profileId);
+  const targets = targetFolders(collections, collectionTitles, folderTitles);
+  if (!targets.length) {
+    throw new Error(`No folders matched collection(s) "${collectionTitles.join(", ")}"`);
+  }
+  console.log(`${targets.length} folder(s) to check\n`);
+
+  await mkdir(OUT_DIR, { recursive: true });
+  const manifest = await readManifest();
+  let changed = 0;
+  let skipped = 0;
+  const failures = [];
+
+  for (const { collection, folder } of targets) {
+    const label = `${collection.title} > ${folder.title}`;
+    const slug = slugify(folder.title);
+    try {
+      const sources = (Array.isArray(folder.sources) && folder.sources.length
+        ? folder.sources
+        : folder.catalogSources) || [];
+      if (!sources.length) {
+        console.log(`- ${label}: no sources configured, skipping`);
+        skipped++;
+        continue;
+      }
+
+      const perSource = await Promise.all(
+        sources.map(async (source) => {
+          try {
+            return await fetchSourceItems(source, { tmdbApiKey, traktClientId, language: "en-US" });
+          } catch (error) {
+            console.warn(`  ${sourceLabel(source)} failed: ${error.message}`);
+            return [];
+          }
+        })
+      );
+
+      const items = interleave(perSource).slice(0, poolSize);
+      if (!items.length) {
+        throw new Error("no backdrops resolved from any source");
+      }
+
+      // Hash before any downloading — an unchanged list costs one catalog
+      // request per source and nothing else.
+      const fingerprint = hashUrls(items.map((item) => item.url));
+      const expectedUrl = `${assetsBaseUrl}/${slug}.webp?v=${fingerprint}`;
+      if (!force && manifest[slug]?.hash === fingerprint && folder.heroBackdropUrl === expectedUrl) {
+        console.log(`- ${label}: unchanged (${fingerprint}), skipping`);
+        skipped++;
+        continue;
+      }
+
+      const artUrls = fanartKey
+        ? await resolveArtUrls(items, { fanartKey, tmdbApiKey, preferredLanguage: "en" })
+        : items.map((item) => item.url);
+
+      const images = await loadImagesFromUrls(artUrls);
+      if (!images.length) {
+        throw new Error("no images could be downloaded/decoded");
+      }
+
+      const buffer = await encodeWebp(renderBackdropCollage(images, LAYOUT_SETTINGS), quality);
+      await writeFile(join(OUT_DIR, `${slug}.webp`), buffer);
+
+      folder.heroBackdropUrl = expectedUrl;
+      manifest[slug] = {
+        hash: fingerprint,
+        folder: label,
+        images: images.length,
+        bytes: buffer.length,
+        updatedAt: new Date().toISOString()
+      };
+      changed++;
+      console.log(
+        `- ${label}: wrote backdrops/${slug}.webp (${images.length} images, ${Math.round(buffer.length / 1024)} KB, v=${fingerprint})`
+      );
+    } catch (error) {
+      failures.push(`${label}: ${error.message}`);
+      console.warn(`- ${label}: FAILED — ${error.message}`);
+    }
+  }
+
+  console.log(`\nchanged=${changed} skipped=${skipped} failed=${failures.length}`);
+
+  if (changed > 0) {
+    await writeFile(MANIFEST_PATH, `${JSON.stringify(manifest, null, 2)}\n`);
+    console.log("Pushing collections...");
+    await pushCollections(accessToken, profileId, collections);
+  } else {
+    console.log("Nothing changed — no collection push, no commit.");
+  }
+
+  // Signals the workflow's commit step without it having to re-derive anything.
+  if (process.env.GITHUB_OUTPUT) {
+    await writeFile(process.env.GITHUB_OUTPUT, `changed=${changed}\n`, { flag: "a" });
+  }
+
+  if (failures.length) {
+    throw new Error(`${failures.length} folder(s) failed:\n  ${failures.join("\n  ")}`);
+  }
+}
+
+main().catch((error) => {
+  console.error("backdrop-sync failed:", error.message);
+  process.exitCode = 1;
+});

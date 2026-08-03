@@ -1,0 +1,16 @@
+{
+  "name": "nuvio-backdrop-sync",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Daily regeneration of Nuvio collection folder backdrops from their configured catalogs, committed to this repo and served over jsDelivr.",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node index.mjs"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.61"
+  }
+}

@@ -1,0 +1,66 @@
+name: Backdrop sync
+
+on:
+  schedule:
+    # Daily at 04:00 UTC. The job self-skips folders whose source lists have
+    # not changed, so a quiet day costs one catalog request per source.
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Regenerate even if the source lists are unchanged"
+        type: boolean
+        default: false
+
+# Needed to commit the regenerated backdrops back to this repo.
+permissions:
+  contents: write
+
+concurrency:
+  group: backdrop-sync
+  cancel-in-progress: false
+
+jobs:
+  regenerate-backdrops:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # @napi-rs/canvas ships prebuilt binaries — no cairo/pango/librsvg apt
+      # packages and no native build, which was most of this job's old runtime.
+      - name: Install script dependencies
+        working-directory: scripts/backdrop-sync
+        run: npm install
+
+      - name: Run backdrop sync
+        id: sync
+        working-directory: scripts/backdrop-sync
+        env:
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          FANART_API_KEY: ${{ secrets.FANART_API_KEY }}
+          TRAKT_CLIENT_ID: ${{ secrets.TRAKT_CLIENT_ID }}
+          NUVIO_EMAIL: ${{ secrets.NUVIO_EMAIL }}
+          NUVIO_PASSWORD: ${{ secrets.NUVIO_PASSWORD }}
+          NUVIO_PROFILE_ID: ${{ vars.NUVIO_PROFILE_ID }}
+          TARGET_COLLECTION_TITLES: ${{ vars.TARGET_COLLECTION_TITLES }}
+          TARGET_FOLDER_TITLES: ${{ vars.TARGET_FOLDER_TITLES }}
+          ASSETS_BASE_URL: ${{ vars.ASSETS_BASE_URL }}
+          FORCE_REGENERATE: ${{ inputs.force }}
+        run: npm start
+
+      - name: Commit regenerated backdrops
+        if: steps.sync.outputs.changed != '0'
+        run: |
+          if git diff --quiet -- backdrops; then
+            echo "No file changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add backdrops
+          git commit -m "chore: refresh collection backdrops"
+          git push
