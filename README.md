@@ -112,7 +112,7 @@ Variables (same page → **Variables**):
 | `WEBP_QUALITY` | encoder quality | `82` |
 | `ACCENT_OPACITY` | strength of the brand-coloured top-right glow | `0.46` |
 | `ACCENT_REACH` | how far across the frame the glow falls off | `0.72` |
-| `ACCENT_OVERRIDES` | `slug=#rrggbb` pairs for covers that sample badly. Hulu and Peacock are overridden by default | — |
+| `ACCENT_OVERRIDES` | `slug=#rrggbb` pairs. All nine streaming services default to hues recovered from the reference backdrops; cover-sampling is only used for folders without an entry | — |
 
 The workflow needs `permissions: contents: write` to commit the regenerated
 files back, which is already set in the workflow file.

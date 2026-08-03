@@ -87,19 +87,81 @@ function applyOverlay(ctx, preset, opacity, reach = 0.6, W = CANVAS_W, H = CANVA
   }
 }
 
-// Brand-coloured glow in the top-right, the counterpart to the dark left/bottom
-// gradients. A radial gradient is already smooth, so unlike a pixel-shaded
-// version this needs no blur pass.
-function applyAccentGlow(ctx, accent, W, H, { opacity = 0.46, reach = 0.72 } = {}) {
+// The reference pipeline's overlay stack, reproduced exactly: a dark
+// bottom-left corner, a dark left edge, a dark bottom edge, then the accent
+// glow in the top-right. Same falloff curves, same alphas, same order.
+//
+// The two corner layers are computed at quarter resolution and scaled up, as
+// the original does — that is both far cheaper and the reason the falloff
+// looks soft rather than banded.
+const SHADE_RGB = [6, 6, 8];
+
+function cornerLayer(W, H, paint) {
+  const w = Math.max(1, Math.floor(W / 4));
+  const h = Math.max(1, Math.floor(H / 4));
+  const canvas = createCanvas(w, h);
+  const ctx = canvas.getContext("2d");
+  const image = ctx.createImageData(w, h);
+  const maxDiag = Math.hypot(w, h);
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const [r, g, b, a] = paint(x, y, w, h, maxDiag);
+      const offset = (y * w + x) * 4;
+      image.data[offset] = r;
+      image.data[offset + 1] = g;
+      image.data[offset + 2] = b;
+      image.data[offset + 3] = a;
+    }
+  }
+  ctx.putImageData(image, 0, 0);
+  return canvas;
+}
+
+function applyReferenceOverlay(ctx, accent, W, H) {
+  const [sr, sg, sb] = SHADE_RGB;
+
+  // Dark bottom-left corner: alpha 230 * (1 - d/0.60)^2.2
+  const bottomLeft = cornerLayer(W, H, (x, y, w, h, maxDiag) => {
+    const mix = Math.hypot(x, h - y) / maxDiag;
+    const base = Math.max(0, 1 - mix / 0.6);
+    return [sr, sg, sb, Math.min(255, Math.round(230 * base ** 2.2))];
+  });
+  ctx.drawImage(bottomLeft, 0, 0, W, H);
+
+  // Dark left edge: alpha 200 * (1 - x/(W*0.45))^1.6
+  for (let x = 0; x < W; x++) {
+    const mix = Math.max(0, 1 - x / (W * 0.45));
+    const alpha = Math.round(200 * mix ** 1.6);
+    if (!alpha) break;
+    ctx.fillStyle = `rgba(${sr},${sg},${sb},${(alpha / 255).toFixed(4)})`;
+    ctx.fillRect(x, 0, 1, H);
+  }
+
+  // Dark bottom edge: alpha 200 * ((y - H/2)/(H/2))^1.4
+  for (let y = Math.floor(H * 0.5); y < H; y++) {
+    const mix = Math.max(0, (y - H * 0.5) / (H * 0.5));
+    const alpha = Math.round(200 * mix ** 1.4);
+    if (!alpha) continue;
+    ctx.fillStyle = `rgba(${sr},${sg},${sb},${(alpha / 255).toFixed(4)})`;
+    ctx.fillRect(0, y, W, 1);
+  }
+
   if (!accent) return;
-  const [r, g, b] = accent;
-  const radius = Math.hypot(W, H) * reach;
-  const grad = ctx.createRadialGradient(W, 0, 0, W, 0, radius);
-  grad.addColorStop(0, `rgba(${r},${g},${b},${opacity})`);
-  grad.addColorStop(0.45, `rgba(${r},${g},${b},${(opacity * 0.35).toFixed(3)})`);
-  grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, W, H);
+
+  // Accent glow, top-right: alpha 118 * (1 - d/0.72)^1.9, blurred.
+  const [ar, ag, ab] = accent;
+  const glow = cornerLayer(W, H, (x, y, w, h, maxDiag) => {
+    const mix = Math.hypot(w - x, y) / maxDiag;
+    const base = Math.max(0, 1 - mix / 0.72);
+    return [ar, ag, ab, Math.min(255, Math.round(118 * base ** 1.9))];
+  });
+  // No canvas blur here: it treats outside-canvas as transparent and so eats
+  // the glow's peak exactly where it should be strongest (measured 137,125,118
+  // at the corner against the formula's 172,115,81), while bleeding tint into
+  // the centre. The original blurs because it builds this at quarter size and
+  // upscales; drawImage's own smoothing on the same quarter-size layer gives
+  // the soft falloff without touching the alpha.
+  ctx.drawImage(glow, 0, 0, W, H);
 }
 
 function rgbToHsv(r, g, b) {
@@ -274,10 +336,11 @@ export function renderBackdropCollage(images, settings) {
   }
 
   ctx.restore();
-  applyOverlay(ctx, overlayPreset, overlayOpacity, overlayReach, W, H);
-  // After the dark gradients so the tint sits over them, matching the
-  // reference backdrops' coloured top-right corner.
-  applyAccentGlow(ctx, accentColor, W, H, { opacity: accentOpacity, reach: accentReach });
+  if (overlayPreset === "reference") {
+    applyReferenceOverlay(ctx, accentColor, W, H);
+  } else {
+    applyOverlay(ctx, overlayPreset, overlayOpacity, overlayReach, W, H);
+  }
 
   return canvas;
 }

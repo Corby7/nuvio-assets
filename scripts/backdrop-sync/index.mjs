@@ -58,7 +58,7 @@ const LAYOUT_SETTINGS = {
   autoStagger: true,
   stagger: 0,
   bgColor: "#0b0b0f",
-  overlayPreset: "cinematic",
+  overlayPreset: "reference",
   overlayOpacity: 0.85,
   overlayReach: 0.6,
   imageType: "backdrop",
@@ -69,9 +69,21 @@ const LAYOUT_SETTINGS = {
 
 // Covers whose dominant colour is not the brand colour: Hulu's samples blue
 // against its green brand, Peacock's samples a desaturated grey.
+// Hues recovered from the reference backdrops themselves (sampled at the glow's
+// peak in the top-right and un-composited through its 118/255 alpha), then
+// normalised to a common brightness. Cover-sampling gets several of these
+// wrong — Crunchyroll reads brown rather than orange, Apple TV's near-monochrome
+// cover gives no usable hue at all.
 const DEFAULT_ACCENT_OVERRIDES = {
-  hulu: "#1ce783",
-  peacock: "#00a9ff"
+  "apple-tv": "#e095cb",
+  crunchyroll: "#e0631b",
+  "disney-plus": "#15d6e0",
+  "hbo-max": "#cc17e0",
+  hulu: "#25e084",
+  netflix: "#e01727",
+  "paramount-plus": "#196ae0",
+  peacock: "#e09b4e",
+  "prime-video": "#1d77e0"
 };
 
 // Keeps generated filenames aligned with the assets already in backdrops/.
