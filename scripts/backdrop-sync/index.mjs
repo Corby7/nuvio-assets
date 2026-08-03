@@ -92,6 +92,17 @@ const SLUG_OVERRIDES = {
   "apple tv": "apple-tv"
 };
 
+// Output is grouped per collection (backdrops/<group>/<slug>.webp) so folders
+// with the same title in different collections cannot overwrite each other.
+const GROUP_OVERRIDES = {
+  "streaming services": "streaming"
+};
+
+function groupFor(collectionTitle) {
+  const normalized = normalizeTitle(collectionTitle);
+  return GROUP_OVERRIDES[normalized] || slugify(collectionTitle) || "misc";
+}
+
 function slugify(title) {
   const raw = String(title || "").trim().toLowerCase();
   if (SLUG_OVERRIDES[raw]) return SLUG_OVERRIDES[raw];
@@ -253,7 +264,7 @@ async function main() {
   const accentOpacity = Number(process.env.ACCENT_OPACITY || "0.46");
   const accentReach = Number(process.env.ACCENT_REACH || "0.72");
   const force = process.env.FORCE_REGENERATE === "true";
-  const collectionTitles = (process.env.TARGET_COLLECTION_TITLES || "Streaming Services,Discover").split(",");
+  const collectionTitles = (process.env.TARGET_COLLECTION_TITLES || "Streaming Services,Discover,Genres").split(",");
   // Discover folders ("Trending Shows", "Top Rated", ...) have no brand
   // colour, so they get the dark gradients for text legibility but no tint.
   const accentCollections = new Set(
@@ -280,7 +291,9 @@ async function main() {
 
   for (const { collection, folder } of targets) {
     const label = `${collection.title} > ${folder.title}`;
+    const group = groupFor(collection.title);
     const slug = slugify(folder.title);
+    const key = `${group}/${slug}`;
     try {
       const sources = (Array.isArray(folder.sources) && folder.sources.length
         ? folder.sources
@@ -315,8 +328,8 @@ async function main() {
         ...items.map((item) => item.url),
         `accent:${accent ? accent.join(",") : "none"}`
       ]);
-      const expectedUrl = `${assetsBaseUrl}/${slug}.webp?v=${fingerprint}`;
-      if (!force && manifest[slug]?.hash === fingerprint && folder.heroBackdropUrl === expectedUrl) {
+      const expectedUrl = `${assetsBaseUrl}/${key}.webp?v=${fingerprint}`;
+      if (!force && manifest[key]?.hash === fingerprint && folder.heroBackdropUrl === expectedUrl) {
         console.log(`- ${label}: unchanged (${fingerprint}), skipping`);
         skipped++;
         continue;
@@ -331,6 +344,7 @@ async function main() {
         throw new Error("no images could be downloaded/decoded");
       }
 
+      await mkdir(join(OUT_DIR, group), { recursive: true });
       const buffer = await encodeWebp(
         renderBackdropCollage(images, {
           ...LAYOUT_SETTINGS,
@@ -340,10 +354,10 @@ async function main() {
         }),
         quality
       );
-      await writeFile(join(OUT_DIR, `${slug}.webp`), buffer);
+      await writeFile(join(OUT_DIR, group, `${slug}.webp`), buffer);
 
       folder.heroBackdropUrl = expectedUrl;
-      manifest[slug] = {
+      manifest[key] = {
         hash: fingerprint,
         folder: label,
         images: images.length,
@@ -352,7 +366,7 @@ async function main() {
       };
       changed++;
       console.log(
-        `- ${label}: wrote backdrops/${slug}.webp (${images.length} images, ${Math.round(buffer.length / 1024)} KB, ` +
+        `- ${label}: wrote backdrops/${key}.webp (${images.length} images, ${Math.round(buffer.length / 1024)} KB, ` +
           `accent=${accent ? `rgb(${accent.join(",")})` : "none"}, v=${fingerprint})`
       );
     } catch (error) {

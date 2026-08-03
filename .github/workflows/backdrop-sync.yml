@@ -65,7 +65,7 @@ jobs:
             echo "committed=" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          changed=$(git diff --name-only -- 'backdrops/*.webp' | tr '\n' ' ')
+          changed=$(git diff --name-only -- 'backdrops/**/*.webp' 'backdrops/*.webp' | tr '\n' ' ')
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add backdrops

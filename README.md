@@ -62,7 +62,9 @@ tile to Fanart.tv thumb art via `sources/fanart.mjs` (the art with title logos
 baked in), composites them into a rotated masonry collage (ported from
 [paytonjewell/Nuvio-Backdrop-Generator](https://github.com/paytonjewell/Nuvio-Backdrop-Generator)'s
 canvas renderer, run headlessly via `@napi-rs/canvas`), writes
-`backdrops/<folder-slug>.webp` into this repo, and points the folder's
+`backdrops/<collection-group>/<folder-slug>.webp` into this repo (groups are
+`streaming`, `discover` and `genres`, so folders sharing a title across
+collections cannot overwrite each other), and points the folder's
 `heroBackdropUrl` at the jsDelivr copy via
 `sync_pull_collections`/`sync_push_collections`.
 
@@ -110,7 +112,7 @@ Variables (same page → **Variables**):
 
 | Variable | Purpose | Default |
 | --- | --- | --- |
-| `TARGET_COLLECTION_TITLES` | comma-separated collections to process. Titles are matched with invisible bidi marks stripped, so `Discover` matches a title stored as `\u200eDiscover` | `Streaming Services,Discover` |
+| `TARGET_COLLECTION_TITLES` | comma-separated collections to process. Titles are matched with invisible bidi marks stripped, so `Discover` matches a title stored as `\u200eDiscover` | `Streaming Services,Discover,Genres` |
 | `ACCENT_COLLECTIONS` | collections whose backdrops get the brand-coloured glow. Everything else gets the dark gradients only | `Streaming Services` |
 | `TARGET_FOLDER_TITLES` | optional comma-separated filter within those collections | all folders |
 | `NUVIO_PROFILE_ID` | local profile index (matches `ProfileManager`) | `1` |
