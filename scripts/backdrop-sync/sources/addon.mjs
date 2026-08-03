@@ -13,9 +13,30 @@ function encodeArg(value) {
   return encodeURIComponent(value).replace(/\+/g, "%20");
 }
 
-function buildCatalogUrl(source = {}, skip = 0) {
-  const basePath = canonicalizeAddonBaseUrl(source.addonBaseUrl);
-  if (!basePath) throw new Error("Addon source has no addonBaseUrl");
+// Collections store the addon by id ("aio-metadata"), not by URL —
+// addonBaseUrl is null there, and the real URL lives in the app's local
+// installedAddonUrls store, which has no pull RPC. So it is supplied to this
+// job via ADDON_BASE_URLS instead.
+export function resolveAddonBaseUrl(source = {}, overrides = {}) {
+  const explicit = canonicalizeAddonBaseUrl(source.addonBaseUrl);
+  if (explicit) return explicit;
+  const byId = canonicalizeAddonBaseUrl(overrides[String(source.addonId || "").trim()]);
+  if (byId) return byId;
+  // Some configs put the URL itself in addonId.
+  const idAsUrl = String(source.addonId || "").trim();
+  if (/^https?:\/\//i.test(idAsUrl)) return canonicalizeAddonBaseUrl(idAsUrl);
+  const fallback = canonicalizeAddonBaseUrl(overrides["*"]);
+  if (fallback) return fallback;
+  return "";
+}
+
+function buildCatalogUrl(source = {}, skip = 0, overrides = {}) {
+  const basePath = resolveAddonBaseUrl(source, overrides);
+  if (!basePath) {
+    throw new Error(
+      `no base URL for addon "${source.addonId || "?"}" — add it to the ADDON_BASE_URLS secret as ${source.addonId || "<addonId>"}=https://...`
+    );
+  }
   const args = {};
   if (source.genre) args.genre = source.genre;
   if (skip > 0) args.skip = String(skip);
@@ -30,13 +51,13 @@ function buildCatalogUrl(source = {}, skip = 0) {
 // collectionsStore.js normalizeCollectionSource's "addon" branch, the
 // default provider — this is also how MDBList-backed catalogs are consumed,
 // via whatever Stremio addon wraps them)
-export async function fetchAddonBackdrops(source = {}, { limit = 60 } = {}) {
+export async function fetchAddonBackdrops(source = {}, { limit = 60, baseUrlOverrides = {} } = {}) {
   // Stremio catalogs page 20 at a time; without this a folder's grid only ever
   // sees the first page of each list.
   const metas = [];
   let skip = 0;
   while (metas.length < limit) {
-    const url = buildCatalogUrl(source, skip);
+    const url = buildCatalogUrl(source, skip, baseUrlOverrides);
     const res = await fetch(url);
     if (!res.ok) {
       if (skip === 0) throw new Error(`Addon catalog request failed (${res.status}) for ${url}`);

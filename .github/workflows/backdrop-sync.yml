@@ -42,6 +42,7 @@ jobs:
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           FANART_API_KEY: ${{ secrets.FANART_API_KEY }}
+          ADDON_BASE_URLS: ${{ secrets.ADDON_BASE_URLS }}
           TRAKT_CLIENT_ID: ${{ secrets.TRAKT_CLIENT_ID }}
           NUVIO_EMAIL: ${{ secrets.NUVIO_EMAIL }}
           NUVIO_PASSWORD: ${{ secrets.NUVIO_PASSWORD }}

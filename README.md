@@ -95,6 +95,7 @@ Secrets (Settings → Secrets and variables → Actions → **Secrets**):
 | Secret | Purpose |
 | --- | --- |
 | `NUVIO_EMAIL` / `NUVIO_PASSWORD` | Nuvio account login (same Supabase password-grant auth the app itself uses) — needed to read each folder's live sources and to write back the new `heroBackdropUrl` |
+| `ADDON_BASE_URLS` | required if any folder has addon sources. Collections store the addon by id with `addonBaseUrl: null`, and the real URL lives in the app's local `installedAddonUrls` store, which has no pull RPC. Format: `aio-metadata=https://host/stremio/<config>` (comma or newline separated), or a single bare URL used for every addon source. Keep it a secret — these URLs often embed a config id |
 | `FANART_API_KEY` | optional — without it tiles fall back to plain TMDB backdrops and lose the title logos |
 | `TMDB_API_KEY` | optional — falls back to the public key already shipped in the Nuvio web client bundle |
 | `TRAKT_CLIENT_ID` | optional — falls back to the public client ID already shipped in the Nuvio web client bundle; only used if a folder has a Trakt-sourced list |

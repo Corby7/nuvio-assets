@@ -76,6 +76,23 @@ function slugify(title) {
     .replace(/^-+|-+$/g, "");
 }
 
+// ADDON_BASE_URLS accepts "addonId=https://..." pairs (comma or newline
+// separated), or a single bare URL used for every addon source.
+function parseAddonBaseUrls(raw) {
+  const text = String(raw || "").trim();
+  if (!text) return {};
+  if (/^https?:\/\//i.test(text) && !text.includes("=")) return { "*": text };
+  const map = {};
+  for (const part of text.split(/[\n,]+/)) {
+    const entry = part.trim();
+    if (!entry) continue;
+    const index = entry.indexOf("=");
+    if (index <= 0) continue;
+    map[entry.slice(0, index).trim()] = entry.slice(index + 1).trim();
+  }
+  return map;
+}
+
 function sourceLabel(source = {}) {
   return `${source.provider || "addon"}:${source.title || source.catalogName || source.catalogId || source.tmdbSourceType || ""}`;
 }
@@ -89,7 +106,7 @@ async function fetchSourceItems(source, config) {
     const refs = await fetchTraktTmdbRefs(source, config.traktClientId);
     return resolveBackdropsByTmdbId(refs, config.tmdbApiKey);
   }
-  return fetchAddonBackdrops(source);
+  return fetchAddonBackdrops(source, { baseUrlOverrides: config.addonBaseUrls });
 }
 
 // Round-robins across sources so no single list dominates the grid, dropping
@@ -143,6 +160,7 @@ async function main() {
   const tmdbApiKey = process.env.TMDB_API_KEY || DEFAULT_TMDB_API_KEY;
   const traktClientId = process.env.TRAKT_CLIENT_ID || DEFAULT_TRAKT_CLIENT_ID;
   const fanartKey = process.env.FANART_API_KEY || "";
+  const addonBaseUrls = parseAddonBaseUrls(process.env.ADDON_BASE_URLS);
   const nuvioEmail = requireEnv("NUVIO_EMAIL");
   const nuvioPassword = requireEnv("NUVIO_PASSWORD");
   const profileId = Number(process.env.NUVIO_PROFILE_ID || "1");
@@ -186,7 +204,7 @@ async function main() {
       const perSource = await Promise.all(
         sources.map(async (source) => {
           try {
-            return await fetchSourceItems(source, { tmdbApiKey, traktClientId, language: "en-US" });
+            return await fetchSourceItems(source, { tmdbApiKey, traktClientId, addonBaseUrls, language: "en-US" });
           } catch (error) {
             console.warn(`  ${sourceLabel(source)} failed: ${error.message}`);
             return [];
