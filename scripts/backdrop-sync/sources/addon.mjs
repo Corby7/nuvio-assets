@@ -75,6 +75,7 @@ export async function fetchAddonBackdrops(source = {}, { limit = 60, baseUrlOver
     .map((meta) => ({
       url: downscaleTmdb(meta?.background),
       tmdbId: meta?.moviedb_id || meta?._tmdbId || null,
+      imdbId: typeof meta?.imdb_id === "string" && meta.imdb_id.startsWith("tt") ? meta.imdb_id : null,
       kind: meta?.type === "series" || meta?.type === "tv" ? "tv" : "movie",
       originalLanguage: null
     }))

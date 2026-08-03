@@ -179,8 +179,18 @@ async function fetchSourceItems(source, config) {
   return fetchAddonBackdrops(source, { baseUrlOverrides: config.addonBaseUrls });
 }
 
-// Round-robins across sources so no single list dominates the grid, dropping
-// duplicates by URL.
+// A title appearing in two of a folder's lists must occupy one tile, not two.
+// Deduping on the image URL is not enough: the same show arrives with
+// different art depending on the source (an addon entry can hand back a TVDB
+// image where TMDB gives an image.tmdb.org one), so identity comes from the
+// title's ids first and the URL only as a last resort.
+function identityKey(item) {
+  if (item.tmdbId) return `tmdb:${item.kind || "movie"}:${String(item.tmdbId)}`;
+  if (item.imdbId) return `imdb:${item.imdbId}`;
+  return `url:${item.url}`;
+}
+
+// Round-robins across sources so no single list dominates the grid.
 function interleave(lists) {
   const seen = new Set();
   const merged = [];
@@ -188,8 +198,10 @@ function interleave(lists) {
   for (let i = 0; i < maxLen; i++) {
     for (const list of lists) {
       const item = list[i];
-      if (!item?.url || seen.has(item.url)) continue;
-      seen.add(item.url);
+      if (!item?.url) continue;
+      const key = identityKey(item);
+      if (seen.has(key)) continue;
+      seen.add(key);
       merged.push(item);
     }
   }
