@@ -1,0 +1,12 @@
+# Secrets — this repo is public and CDN-served, never commit keys.
+.env
+.env.*
+!.env.example
+
+# Python tooling for scripts/
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+.DS_Store
