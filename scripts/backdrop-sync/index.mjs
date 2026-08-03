@@ -147,6 +147,15 @@ async function resolveAccent(folder, slug, overrides) {
   }
 }
 
+// Collection/folder titles can carry invisible bidi marks (the Discover
+// collection's title starts with U+200E), which would break plain matching.
+function normalizeTitle(value) {
+  return String(value || "")
+    .replace(/[\u200e\u200f\u202a-\u202e\u2066-\u2069\u200b]/g, "")
+    .trim()
+    .toLowerCase();
+}
+
 function sourceLabel(source = {}) {
   return `${source.provider || "addon"}:${source.title || source.catalogName || source.catalogId || source.tmdbSourceType || ""}`;
 }
@@ -193,15 +202,15 @@ function hashUrls(urls) {
 }
 
 function targetFolders(collections, collectionTitles, folderTitles) {
-  const wantCollection = new Set(collectionTitles.map((t) => t.trim().toLowerCase()).filter(Boolean));
-  const wantFolder = new Set(folderTitles.map((t) => t.trim().toLowerCase()).filter(Boolean));
+  const wantCollection = new Set(collectionTitles.map(normalizeTitle).filter(Boolean));
+  const wantFolder = new Set(folderTitles.map(normalizeTitle).filter(Boolean));
   const targets = [];
   for (const collection of collections || []) {
-    if (wantCollection.size && !wantCollection.has(String(collection?.title || "").trim().toLowerCase())) {
+    if (wantCollection.size && !wantCollection.has(normalizeTitle(collection?.title))) {
       continue;
     }
     for (const folder of collection?.folders || []) {
-      if (wantFolder.size && !wantFolder.has(String(folder?.title || "").trim().toLowerCase())) {
+      if (wantFolder.size && !wantFolder.has(normalizeTitle(folder?.title))) {
         continue;
       }
       targets.push({ collection, folder });
@@ -225,7 +234,12 @@ async function main() {
   const accentOpacity = Number(process.env.ACCENT_OPACITY || "0.46");
   const accentReach = Number(process.env.ACCENT_REACH || "0.72");
   const force = process.env.FORCE_REGENERATE === "true";
-  const collectionTitles = (process.env.TARGET_COLLECTION_TITLES || "Streaming Services").split(",");
+  const collectionTitles = (process.env.TARGET_COLLECTION_TITLES || "Streaming Services,Discover").split(",");
+  // Discover folders ("Trending Shows", "Top Rated", ...) have no brand
+  // colour, so they get the dark gradients for text legibility but no tint.
+  const accentCollections = new Set(
+    (process.env.ACCENT_COLLECTIONS || "Streaming Services").split(",").map(normalizeTitle).filter(Boolean)
+  );
   const folderTitles = (process.env.TARGET_FOLDER_TITLES || "").split(",");
 
   console.log("Signing in to Nuvio...");
@@ -276,7 +290,8 @@ async function main() {
 
       // Hash before any downloading — an unchanged list costs one catalog
       // request per source and nothing else.
-      const accent = await resolveAccent(folder, slug, accentOverrides);
+      const wantsAccent = accentCollections.has(normalizeTitle(collection.title));
+      const accent = wantsAccent ? await resolveAccent(folder, slug, accentOverrides) : null;
       const fingerprint = hashUrls([
         ...items.map((item) => item.url),
         `accent:${accent ? accent.join(",") : "none"}`

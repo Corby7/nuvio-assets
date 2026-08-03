@@ -104,7 +104,8 @@ Variables (same page → **Variables**):
 
 | Variable | Purpose | Default |
 | --- | --- | --- |
-| `TARGET_COLLECTION_TITLES` | comma-separated collections to process | `Streaming Services` |
+| `TARGET_COLLECTION_TITLES` | comma-separated collections to process. Titles are matched with invisible bidi marks stripped, so `Discover` matches a title stored as `\u200eDiscover` | `Streaming Services,Discover` |
+| `ACCENT_COLLECTIONS` | collections whose backdrops get the brand-coloured glow. Everything else gets the dark gradients only | `Streaming Services` |
 | `TARGET_FOLDER_TITLES` | optional comma-separated filter within those collections | all folders |
 | `NUVIO_PROFILE_ID` | local profile index (matches `ProfileManager`) | `1` |
 | `ASSETS_BASE_URL` | base URL the generated files are served from | jsDelivr `@main/backdrops` |
