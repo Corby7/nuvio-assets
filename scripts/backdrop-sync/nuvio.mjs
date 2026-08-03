@@ -31,11 +31,15 @@ async function rpc(accessToken, fnName, body) {
     },
     body: JSON.stringify(body)
   });
+
+  const text = await res.text();
+  const data = text ? JSON.parse(text) : null;
+
   if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || `${fnName} failed (${res.status})`);
+    throw new Error(data?.message || `${fnName} failed (${res.status})`);
   }
-  return res.json();
+
+  return data;
 }
 
 export async function pullCollections(accessToken, profileId) {
