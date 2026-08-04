@@ -63,60 +63,60 @@
     "updatedAt": "2026-08-03T13:17:28.782Z"
   },
   "discover/trending-shows": {
-    "hash": "d48d0d57",
+    "hash": "a185ffff",
     "folder": "‎Discover > Trending Shows",
     "images": 60,
-    "bytes": 342652,
-    "updatedAt": "2026-08-03T13:16:15.705Z"
+    "bytes": 331078,
+    "updatedAt": "2026-08-04T06:30:08.576Z"
   },
   "discover/trending-movies": {
-    "hash": "de8e1054",
+    "hash": "7cf9eb0c",
     "folder": "‎Discover > Trending Movies",
     "images": 60,
-    "bytes": 245578,
-    "updatedAt": "2026-08-03T13:16:20.035Z"
+    "bytes": 246390,
+    "updatedAt": "2026-08-04T06:30:15.433Z"
   },
   "discover/popular-shows": {
-    "hash": "6948eda4",
+    "hash": "e3065d72",
     "folder": "‎Discover > Popular Shows",
     "images": 60,
-    "bytes": 300296,
-    "updatedAt": "2026-08-03T13:16:26.412Z"
+    "bytes": 308574,
+    "updatedAt": "2026-08-04T06:30:21.254Z"
   },
   "discover/popular-movies": {
-    "hash": "7bee96cb",
+    "hash": "03b363c5",
     "folder": "‎Discover > Popular Movies",
     "images": 60,
     "bytes": 292580,
-    "updatedAt": "2026-08-03T13:16:30.504Z"
+    "updatedAt": "2026-08-04T06:30:23.784Z"
   },
   "discover/top-rated": {
-    "hash": "6bdfc75f",
+    "hash": "5498acad",
     "folder": "‎Discover > Top Rated",
     "images": 60,
-    "bytes": 351204,
-    "updatedAt": "2026-08-03T13:16:38.381Z"
+    "bytes": 349942,
+    "updatedAt": "2026-08-04T06:30:28.117Z"
   },
   "discover/coming-soon-shows": {
-    "hash": "5937dfe0",
+    "hash": "9c2eda14",
     "folder": "‎Discover > Coming Soon Shows",
     "images": 50,
-    "bytes": 242654,
-    "updatedAt": "2026-08-03T13:16:44.690Z"
+    "bytes": 252322,
+    "updatedAt": "2026-08-04T06:30:33.147Z"
   },
   "discover/coming-soon-movies": {
-    "hash": "7bc75791",
+    "hash": "fe2bcb81",
     "folder": "‎Discover > Coming Soon Movies",
     "images": 60,
-    "bytes": 313402,
-    "updatedAt": "2026-08-03T13:16:49.813Z"
+    "bytes": 287970,
+    "updatedAt": "2026-08-04T06:30:36.687Z"
   },
   "genres/action": {
-    "hash": "1fc8b006",
+    "hash": "1817604f",
     "folder": "Genres > Action",
     "images": 60,
-    "bytes": 295802,
-    "updatedAt": "2026-08-03T13:17:36.533Z"
+    "bytes": 326758,
+    "updatedAt": "2026-08-04T06:30:51.760Z"
   },
   "genres/animation": {
     "hash": "8b4fe81b",
