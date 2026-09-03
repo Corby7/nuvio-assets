@@ -56,32 +56,52 @@ jobs:
           FORCE_REGENERATE: ${{ inputs.force }}
         run: npm start
 
+      # Runs even when the sync step exited non-zero. The script pushes the new
+      # heroBackdropUrls to Nuvio *before* it reports per-folder failures, so
+      # skipping the commit on a partial failure would leave the app pointing at
+      # bytes that were never committed — and the manifest would stay stale, so
+      # every later run would repeat the same push and the same failure.
       - name: Commit regenerated backdrops
         id: commit
-        if: steps.sync.outputs.changed != '0'
+        if: ${{ !cancelled() && steps.sync.outputs.changed != '0' }}
         run: |
-          if git diff --quiet -- backdrops; then
+          # Stage first: new folders/groups arrive as untracked files, which
+          # `git diff` alone does not report.
+          git add -A backdrops
+          if git diff --cached --quiet -- backdrops; then
             echo "No file changes to commit."
             echo "committed=" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          changed=$(git diff --name-only -- 'backdrops/**/*.webp' 'backdrops/*.webp' | tr '\n' ' ')
+          # Added as well as modified: jsDelivr caches 404s, so a path the app
+          # started serving before the file existed needs purging too.
+          purge_list=$(git diff --cached --name-only --diff-filter=AM -- 'backdrops/**/*.webp' 'backdrops/*.webp')
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add backdrops
           git commit -m "chore: refresh collection backdrops"
+          # Any unrelated push to main between checkout and here would otherwise
+          # fail the job after the collections were already updated.
+          git pull --rebase origin "${GITHUB_REF_NAME}"
           git push
-          echo "committed=$changed" >> "$GITHUB_OUTPUT"
+          # Newline-delimited, so a path is never split on whitespace.
+          {
+            echo "committed<<PURGE_EOF"
+            printf '%s\n' "$purge_list"
+            echo "PURGE_EOF"
+          } >> "$GITHUB_OUTPUT"
 
       # jsDelivr ignores the query string when caching, so the ?v= hash on
       # heroBackdropUrl only busts the browser cache — the edge would keep
       # serving the old bytes for up to s-maxage (12h). Purging the changed
       # paths is what actually makes an update visible.
       - name: Purge jsDelivr cache
-        if: steps.commit.outputs.committed != ''
+        if: ${{ !cancelled() && steps.commit.outputs.committed != '' }}
+        env:
+          PURGE_FILES: ${{ steps.commit.outputs.committed }}
         run: |
-          for file in ${{ steps.commit.outputs.committed }}; do
-            url="https://purge.jsdelivr.net/gh/${GITHUB_REPOSITORY}@main/${file}"
+          printf '%s\n' "$PURGE_FILES" | while IFS= read -r file; do
+            [ -n "$file" ] || continue
+            url="https://purge.jsdelivr.net/gh/${GITHUB_REPOSITORY}@${GITHUB_REF_NAME}/${file}"
             status=$(curl -s --max-time 30 "$url" | tr -d '\n' | grep -o '"status": *"[^"]*"' | head -1)
             echo "purge ${file}: ${status:-no response}"
           done
