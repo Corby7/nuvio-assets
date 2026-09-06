@@ -7,32 +7,32 @@
     "updatedAt": "2026-09-05T08:10:57.207Z"
   },
   "streaming/hbo-max": {
-    "hash": "fbed0c12",
+    "hash": "37b9e203",
     "folder": "Streaming Services > HBO Max",
     "images": 60,
-    "bytes": 305138,
-    "updatedAt": "2026-09-05T08:10:59.504Z"
+    "bytes": 296322,
+    "updatedAt": "2026-09-06T08:28:49.771Z"
   },
   "streaming/apple-tv": {
-    "hash": "5caa832e",
+    "hash": "06d23ddc",
     "folder": "Streaming Services > Apple TV",
     "images": 60,
-    "bytes": 269196,
-    "updatedAt": "2026-09-04T08:40:22.045Z"
+    "bytes": 279456,
+    "updatedAt": "2026-09-06T08:28:56.122Z"
   },
   "streaming/disney-plus": {
-    "hash": "ec3e24e9",
+    "hash": "214029dc",
     "folder": "Streaming Services > Disney+",
     "images": 60,
-    "bytes": 251774,
-    "updatedAt": "2026-09-04T08:40:34.787Z"
+    "bytes": 261782,
+    "updatedAt": "2026-09-06T08:29:02.129Z"
   },
   "streaming/prime-video": {
-    "hash": "0f855e27",
+    "hash": "45627521",
     "folder": "Streaming Services > Amazon Prime",
     "images": 60,
-    "bytes": 241112,
-    "updatedAt": "2026-09-05T08:11:05.467Z"
+    "bytes": 242864,
+    "updatedAt": "2026-09-06T08:29:06.614Z"
   },
   "streaming/paramount-plus": {
     "hash": "c7b0c36b",
@@ -42,18 +42,18 @@
     "updatedAt": "2026-09-04T08:41:11.391Z"
   },
   "streaming/hulu": {
-    "hash": "de167b42",
+    "hash": "5903ab55",
     "folder": "Streaming Services > Hulu",
     "images": 60,
-    "bytes": 248670,
-    "updatedAt": "2026-09-04T08:41:21.175Z"
+    "bytes": 238728,
+    "updatedAt": "2026-09-06T08:29:16.118Z"
   },
   "streaming/crunchyroll": {
-    "hash": "a3be728c",
+    "hash": "b6f436fe",
     "folder": "Streaming Services > Crunchyroll",
     "images": 60,
-    "bytes": 354198,
-    "updatedAt": "2026-09-04T08:41:36.489Z"
+    "bytes": 345756,
+    "updatedAt": "2026-09-06T08:29:20.686Z"
   },
   "streaming/peacock": {
     "hash": "c13f4d8a",
@@ -63,109 +63,109 @@
     "updatedAt": "2026-09-04T08:41:56.651Z"
   },
   "discover/trending-shows": {
-    "hash": "8e0cd3b8",
+    "hash": "a98cf402",
     "folder": "‎Discover > Trending Shows",
     "images": 60,
-    "bytes": 294360,
-    "updatedAt": "2026-09-05T08:10:28.718Z"
+    "bytes": 279860,
+    "updatedAt": "2026-09-06T08:28:05.881Z"
   },
   "discover/trending-movies": {
-    "hash": "4a283b72",
+    "hash": "0dc44b15",
     "folder": "‎Discover > Trending Movies",
     "images": 60,
-    "bytes": 249008,
-    "updatedAt": "2026-09-05T08:10:31.609Z"
+    "bytes": 241196,
+    "updatedAt": "2026-09-06T08:28:11.638Z"
   },
   "discover/popular-shows": {
-    "hash": "42a4d882",
+    "hash": "3a2b0f40",
     "folder": "‎Discover > Popular Shows",
     "images": 60,
-    "bytes": 282920,
-    "updatedAt": "2026-09-05T08:10:34.969Z"
+    "bytes": 318968,
+    "updatedAt": "2026-09-06T08:28:17.624Z"
   },
   "discover/popular-movies": {
-    "hash": "a14a6df8",
+    "hash": "eb9934ac",
     "folder": "‎Discover > Popular Movies",
     "images": 60,
-    "bytes": 240658,
-    "updatedAt": "2026-09-05T08:10:37.073Z"
+    "bytes": 252240,
+    "updatedAt": "2026-09-06T08:28:22.085Z"
   },
   "discover/top-rated": {
-    "hash": "8e7fc84c",
+    "hash": "5548ff67",
     "folder": "‎Discover > Top Rated",
     "images": 60,
-    "bytes": 374714,
-    "updatedAt": "2026-09-05T08:10:43.706Z"
+    "bytes": 353372,
+    "updatedAt": "2026-09-06T08:28:30.000Z"
   },
   "discover/coming-soon-shows": {
-    "hash": "f726d2d5",
+    "hash": "24e80480",
     "folder": "‎Discover > Coming Soon Shows",
-    "images": 54,
-    "bytes": 242610,
-    "updatedAt": "2026-09-05T08:10:48.895Z"
+    "images": 55,
+    "bytes": 241862,
+    "updatedAt": "2026-09-06T08:28:36.717Z"
   },
   "discover/coming-soon-movies": {
-    "hash": "11d1d423",
+    "hash": "27b4cc74",
     "folder": "‎Discover > Coming Soon Movies",
     "images": 60,
-    "bytes": 290458,
-    "updatedAt": "2026-09-05T08:10:53.338Z"
+    "bytes": 295692,
+    "updatedAt": "2026-09-06T08:28:41.753Z"
   },
   "genres/action": {
-    "hash": "be1062ce",
+    "hash": "f49f44a4",
     "folder": "Genres > Action",
     "images": 60,
-    "bytes": 280374,
-    "updatedAt": "2026-09-04T08:42:06.293Z"
+    "bytes": 267746,
+    "updatedAt": "2026-09-06T08:29:29.199Z"
   },
   "genres/animation": {
-    "hash": "6916537c",
+    "hash": "4b8938a9",
     "folder": "Genres > Animation",
     "images": 60,
-    "bytes": 322900,
-    "updatedAt": "2026-09-04T08:42:19.968Z"
+    "bytes": 329922,
+    "updatedAt": "2026-09-06T08:29:35.502Z"
   },
   "genres/anime": {
-    "hash": "6628e07f",
+    "hash": "f626317b",
     "folder": "Genres > Anime",
     "images": 60,
-    "bytes": 380510,
-    "updatedAt": "2026-09-04T08:42:39.357Z"
+    "bytes": 388308,
+    "updatedAt": "2026-09-06T08:29:42.685Z"
   },
   "genres/comedy": {
-    "hash": "a71e7b20",
+    "hash": "bdb47204",
     "folder": "Genres > Comedy",
     "images": 60,
-    "bytes": 334076,
-    "updatedAt": "2026-09-04T08:42:49.303Z"
+    "bytes": 326936,
+    "updatedAt": "2026-09-06T08:29:49.035Z"
   },
   "genres/documentary": {
-    "hash": "2f98f0ac",
+    "hash": "42b05a7e",
     "folder": "Genres > Documentary",
     "images": 60,
-    "bytes": 281882,
-    "updatedAt": "2026-09-05T08:11:20.198Z"
+    "bytes": 289170,
+    "updatedAt": "2026-09-06T08:29:56.327Z"
   },
   "genres/drama": {
-    "hash": "a61be7c5",
+    "hash": "643e3d53",
     "folder": "Genres > Drama",
     "images": 60,
-    "bytes": 270404,
-    "updatedAt": "2026-09-04T08:43:10.822Z"
+    "bytes": 258732,
+    "updatedAt": "2026-09-06T08:30:03.652Z"
   },
   "genres/family": {
-    "hash": "4133096b",
+    "hash": "751f4b06",
     "folder": "Genres > Family",
     "images": 60,
-    "bytes": 378054,
-    "updatedAt": "2026-09-04T08:43:22.285Z"
+    "bytes": 380608,
+    "updatedAt": "2026-09-06T08:30:11.381Z"
   },
   "genres/horror": {
-    "hash": "b466dfa6",
+    "hash": "3b84775a",
     "folder": "Genres > Horror",
     "images": 60,
-    "bytes": 256090,
-    "updatedAt": "2026-09-04T08:44:42.511Z"
+    "bytes": 261266,
+    "updatedAt": "2026-09-06T08:30:18.208Z"
   },
   "genres/korean": {
     "hash": "0d7bdbd5",
@@ -182,24 +182,24 @@
     "updatedAt": "2026-08-28T16:28:58.245Z"
   },
   "genres/romance": {
-    "hash": "a2b3b879",
+    "hash": "81f63f84",
     "folder": "Genres > Romance",
     "images": 60,
-    "bytes": 333956,
-    "updatedAt": "2026-09-05T08:11:51.699Z"
+    "bytes": 330534,
+    "updatedAt": "2026-09-06T08:30:29.846Z"
   },
   "genres/sci-fi": {
-    "hash": "12c9c040",
+    "hash": "ef69cc37",
     "folder": "Genres > Sci-Fi",
     "images": 60,
-    "bytes": 251318,
-    "updatedAt": "2026-09-05T08:12:02.046Z"
+    "bytes": 255664,
+    "updatedAt": "2026-09-06T08:30:36.194Z"
   },
   "genres/thriller": {
-    "hash": "f5cdbaa9",
+    "hash": "84e6085a",
     "folder": "Genres > Thriller",
     "images": 60,
-    "bytes": 217914,
-    "updatedAt": "2026-09-05T08:12:09.418Z"
+    "bytes": 213154,
+    "updatedAt": "2026-09-06T08:30:41.721Z"
   }
 }
