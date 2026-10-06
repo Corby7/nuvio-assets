@@ -1,10 +1,10 @@
 {
   "streaming/netflix": {
-    "hash": "67b36947",
+    "hash": "f9fc8de4",
     "folder": "Streaming Services > Netflix",
     "images": 60,
-    "bytes": 257712,
-    "updatedAt": "2026-10-04T10:30:02.782Z"
+    "bytes": 245070,
+    "updatedAt": "2026-10-06T11:08:34.392Z"
   },
   "streaming/hbo-max": {
     "hash": "9c78b36e",
@@ -63,11 +63,11 @@
     "updatedAt": "2026-10-04T10:30:53.409Z"
   },
   "discover/trending-shows": {
-    "hash": "20ddd04f",
+    "hash": "ee75b553",
     "folder": "‎Discover > Trending Shows",
-    "images": 60,
-    "bytes": 333878,
-    "updatedAt": "2026-10-05T11:16:05.976Z"
+    "images": 59,
+    "bytes": 287536,
+    "updatedAt": "2026-10-06T11:06:01.432Z"
   },
   "discover/trending-movies": {
     "hash": "0154a3e3",
@@ -84,32 +84,32 @@
     "updatedAt": "2026-10-05T11:16:18.554Z"
   },
   "discover/popular-movies": {
-    "hash": "45526c1f",
+    "hash": "979144ea",
     "folder": "‎Discover > Popular Movies",
-    "images": 60,
-    "bytes": 261424,
-    "updatedAt": "2026-10-05T11:16:21.257Z"
+    "images": 59,
+    "bytes": 248846,
+    "updatedAt": "2026-10-06T11:07:06.048Z"
   },
   "discover/top-rated": {
-    "hash": "74082048",
+    "hash": "8f28eb0e",
     "folder": "‎Discover > Top Rated",
     "images": 60,
-    "bytes": 308808,
-    "updatedAt": "2026-10-05T11:16:36.070Z"
+    "bytes": 321288,
+    "updatedAt": "2026-10-06T11:07:26.660Z"
   },
   "discover/coming-soon-shows": {
-    "hash": "c9ff8d1a",
+    "hash": "d4c7d04b",
     "folder": "‎Discover > Coming Soon Shows",
-    "images": 57,
-    "bytes": 248110,
-    "updatedAt": "2026-10-05T11:16:41.213Z"
+    "images": 56,
+    "bytes": 249134,
+    "updatedAt": "2026-10-06T11:08:11.269Z"
   },
   "discover/coming-soon-movies": {
-    "hash": "7afd6a28",
+    "hash": "5567bd7b",
     "folder": "‎Discover > Coming Soon Movies",
     "images": 60,
-    "bytes": 335828,
-    "updatedAt": "2026-10-05T11:16:44.225Z"
+    "bytes": 341086,
+    "updatedAt": "2026-10-06T11:08:15.278Z"
   },
   "genres/action": {
     "hash": "5132ddf5",
