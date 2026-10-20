@@ -1,10 +1,10 @@
 {
   "streaming/netflix": {
-    "hash": "86e56a53",
+    "hash": "bd26e863",
     "folder": "Streaming Services > Netflix",
     "images": 60,
-    "bytes": 244986,
-    "updatedAt": "2026-10-19T09:42:59.433Z"
+    "bytes": 228840,
+    "updatedAt": "2026-10-20T09:16:53.897Z"
   },
   "streaming/hbo-max": {
     "hash": "ca388c77",
@@ -28,11 +28,11 @@
     "updatedAt": "2026-10-19T09:43:35.072Z"
   },
   "streaming/prime-video": {
-    "hash": "3c8a215c",
+    "hash": "110fd630",
     "folder": "Streaming Services > Amazon Prime",
     "images": 60,
-    "bytes": 236424,
-    "updatedAt": "2026-10-19T09:43:47.971Z"
+    "bytes": 246812,
+    "updatedAt": "2026-10-20T09:16:59.403Z"
   },
   "streaming/paramount-plus": {
     "hash": "6c8b76fe",
@@ -63,53 +63,53 @@
     "updatedAt": "2026-10-19T09:44:48.108Z"
   },
   "discover/trending-shows": {
-    "hash": "11043778",
+    "hash": "c7ad3a20",
     "folder": "‎Discover > Trending Shows",
     "images": 60,
-    "bytes": 359510,
-    "updatedAt": "2026-10-19T09:42:08.753Z"
+    "bytes": 328540,
+    "updatedAt": "2026-10-20T09:16:16.952Z"
   },
   "discover/trending-movies": {
-    "hash": "a6a753d3",
+    "hash": "cc6640e9",
     "folder": "‎Discover > Trending Movies",
     "images": 60,
-    "bytes": 264076,
-    "updatedAt": "2026-10-19T09:42:15.090Z"
+    "bytes": 246448,
+    "updatedAt": "2026-10-20T09:16:19.251Z"
   },
   "discover/popular-shows": {
-    "hash": "bb8fdce9",
+    "hash": "939e2e9b",
     "folder": "‎Discover > Popular Shows",
     "images": 60,
-    "bytes": 317400,
-    "updatedAt": "2026-10-19T09:42:22.819Z"
+    "bytes": 314682,
+    "updatedAt": "2026-10-20T09:16:24.005Z"
   },
   "discover/popular-movies": {
-    "hash": "69b6a9e0",
+    "hash": "970502d6",
     "folder": "‎Discover > Popular Movies",
     "images": 60,
-    "bytes": 240134,
-    "updatedAt": "2026-10-19T09:42:25.827Z"
+    "bytes": 209998,
+    "updatedAt": "2026-10-20T09:16:26.430Z"
   },
   "discover/top-rated": {
-    "hash": "ea53ca2e",
+    "hash": "a112c76d",
     "folder": "‎Discover > Top Rated",
     "images": 60,
     "bytes": 308808,
-    "updatedAt": "2026-10-19T09:42:41.628Z"
+    "updatedAt": "2026-10-20T09:16:41.380Z"
   },
   "discover/coming-soon-shows": {
-    "hash": "649ab76a",
+    "hash": "144e643f",
     "folder": "‎Discover > Coming Soon Shows",
     "images": 44,
-    "bytes": 266460,
-    "updatedAt": "2026-10-19T09:42:46.545Z"
+    "bytes": 270222,
+    "updatedAt": "2026-10-20T09:16:46.576Z"
   },
   "discover/coming-soon-movies": {
-    "hash": "9b7a4526",
+    "hash": "32e8567e",
     "folder": "‎Discover > Coming Soon Movies",
     "images": 60,
     "bytes": 259236,
-    "updatedAt": "2026-10-19T09:42:51.225Z"
+    "updatedAt": "2026-10-20T09:16:50.518Z"
   },
   "genres/action": {
     "hash": "f8220c6a",
@@ -168,38 +168,38 @@
     "updatedAt": "2026-10-19T09:48:22.253Z"
   },
   "genres/korean": {
-    "hash": "6c48b8c7",
+    "hash": "dc95b853",
     "folder": "Genres > Korean",
     "images": 60,
-    "bytes": 316746,
-    "updatedAt": "2026-10-14T09:24:51.819Z"
+    "bytes": 303658,
+    "updatedAt": "2026-10-20T09:17:49.134Z"
   },
   "genres/mystery": {
-    "hash": "f55f04ad",
+    "hash": "7ef002fa",
     "folder": "Genres > Mystery",
     "images": 60,
-    "bytes": 246880,
-    "updatedAt": "2026-10-07T10:58:21.312Z"
+    "bytes": 248566,
+    "updatedAt": "2026-10-20T09:17:55.563Z"
   },
   "genres/romance": {
-    "hash": "dab1f1d9",
+    "hash": "5cf4fcb4",
     "folder": "Genres > Romance",
     "images": 60,
-    "bytes": 268066,
-    "updatedAt": "2026-10-15T09:01:04.585Z"
+    "bytes": 272058,
+    "updatedAt": "2026-10-20T09:18:04.542Z"
   },
   "genres/sci-fi": {
-    "hash": "3e18e325",
+    "hash": "2ffeab6e",
     "folder": "Genres > Sci-Fi",
     "images": 60,
-    "bytes": 256976,
-    "updatedAt": "2026-10-14T09:25:06.394Z"
+    "bytes": 273740,
+    "updatedAt": "2026-10-20T09:18:12.260Z"
   },
   "genres/thriller": {
-    "hash": "3e22455d",
+    "hash": "8b036997",
     "folder": "Genres > Thriller",
     "images": 60,
-    "bytes": 226664,
-    "updatedAt": "2026-10-15T09:01:09.463Z"
+    "bytes": 209476,
+    "updatedAt": "2026-10-20T09:18:18.615Z"
   }
 }
