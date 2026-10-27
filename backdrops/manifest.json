@@ -28,32 +28,32 @@
     "updatedAt": "2026-10-26T09:55:11.635Z"
   },
   "streaming/prime-video": {
-    "hash": "f8e9f15d",
+    "hash": "7e07a72f",
     "folder": "Streaming Services > Amazon Prime",
     "images": 60,
     "bytes": 237218,
-    "updatedAt": "2026-10-26T09:56:51.215Z"
+    "updatedAt": "2026-10-27T09:40:48.766Z"
   },
   "streaming/paramount-plus": {
-    "hash": "da66ea95",
+    "hash": "0a80b167",
     "folder": "Streaming Services > Paramount+",
     "images": 60,
-    "bytes": 279926,
-    "updatedAt": "2026-10-24T08:46:14.153Z"
+    "bytes": 264940,
+    "updatedAt": "2026-10-27T09:40:59.996Z"
   },
   "streaming/hulu": {
-    "hash": "fdc27d6d",
+    "hash": "954e6edb",
     "folder": "Streaming Services > Hulu",
     "images": 60,
-    "bytes": 216284,
-    "updatedAt": "2026-10-25T09:02:13.159Z"
+    "bytes": 217842,
+    "updatedAt": "2026-10-27T09:41:11.448Z"
   },
   "streaming/crunchyroll": {
-    "hash": "e19f346c",
+    "hash": "e5753a09",
     "folder": "Streaming Services > Crunchyroll",
     "images": 60,
-    "bytes": 353080,
-    "updatedAt": "2026-10-25T09:02:16.922Z"
+    "bytes": 350220,
+    "updatedAt": "2026-10-27T09:41:25.598Z"
   },
   "streaming/peacock": {
     "hash": "f92d3a8a",
@@ -98,18 +98,18 @@
     "updatedAt": "2026-10-26T09:54:10.462Z"
   },
   "discover/coming-soon-shows": {
-    "hash": "2b5989dc",
+    "hash": "cf1d09ee",
     "folder": "‎Discover > Coming Soon Shows",
-    "images": 44,
-    "bytes": 265124,
-    "updatedAt": "2026-10-26T09:54:17.269Z"
+    "images": 43,
+    "bytes": 265332,
+    "updatedAt": "2026-10-27T09:40:31.556Z"
   },
   "discover/coming-soon-movies": {
-    "hash": "febee1bc",
+    "hash": "7391b17b",
     "folder": "‎Discover > Coming Soon Movies",
     "images": 60,
     "bytes": 287298,
-    "updatedAt": "2026-10-26T09:54:23.740Z"
+    "updatedAt": "2026-10-27T09:40:34.833Z"
   },
   "genres/action": {
     "hash": "afda5272",
