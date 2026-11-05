@@ -91,25 +91,25 @@
     "updatedAt": "2026-11-04T11:55:46.860Z"
   },
   "discover/top-rated": {
-    "hash": "d830d7fe",
+    "hash": "56f11302",
     "folder": "‎Discover > Top Rated",
     "images": 60,
-    "bytes": 314804,
-    "updatedAt": "2026-11-04T11:56:02.356Z"
+    "bytes": 314500,
+    "updatedAt": "2026-11-05T11:58:33.342Z"
   },
   "discover/coming-soon-shows": {
-    "hash": "bfdb8e95",
+    "hash": "f6171081",
     "folder": "‎Discover > Coming Soon Shows",
-    "images": 41,
-    "bytes": 250584,
-    "updatedAt": "2026-11-04T11:56:07.700Z"
+    "images": 39,
+    "bytes": 260608,
+    "updatedAt": "2026-11-05T11:58:39.296Z"
   },
   "discover/coming-soon-movies": {
-    "hash": "dd382fea",
+    "hash": "33f8c834",
     "folder": "‎Discover > Coming Soon Movies",
-    "images": 60,
-    "bytes": 301894,
-    "updatedAt": "2026-11-04T11:56:11.504Z"
+    "images": 58,
+    "bytes": 258830,
+    "updatedAt": "2026-11-05T11:58:43.497Z"
   },
   "genres/action": {
     "hash": "9b6a8bd4",
