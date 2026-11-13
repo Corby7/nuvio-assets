@@ -1,10 +1,10 @@
 {
   "streaming/netflix": {
-    "hash": "d9cc36d4",
+    "hash": "d7581767",
     "folder": "Streaming Services > Netflix",
     "images": 60,
     "bytes": 246364,
-    "updatedAt": "2026-11-12T12:20:47.516Z"
+    "updatedAt": "2026-11-13T11:58:09.725Z"
   },
   "streaming/hbo-max": {
     "hash": "fff06543",
@@ -91,25 +91,25 @@
     "updatedAt": "2026-11-12T12:20:14.477Z"
   },
   "discover/top-rated": {
-    "hash": "a064d5d8",
+    "hash": "95ef0769",
     "folder": "‎Discover > Top Rated",
     "images": 60,
     "bytes": 315680,
-    "updatedAt": "2026-11-12T12:20:29.633Z"
+    "updatedAt": "2026-11-13T11:57:54.506Z"
   },
   "discover/coming-soon-shows": {
-    "hash": "900ea824",
+    "hash": "9226ac2f",
     "folder": "‎Discover > Coming Soon Shows",
-    "images": 42,
-    "bytes": 236080,
-    "updatedAt": "2026-11-12T12:20:35.279Z"
+    "images": 37,
+    "bytes": 247762,
+    "updatedAt": "2026-11-13T11:57:59.237Z"
   },
   "discover/coming-soon-movies": {
-    "hash": "3ab8955a",
+    "hash": "7d7bd256",
     "folder": "‎Discover > Coming Soon Movies",
     "images": 60,
-    "bytes": 309468,
-    "updatedAt": "2026-11-12T12:20:42.476Z"
+    "bytes": 309474,
+    "updatedAt": "2026-11-13T11:58:03.737Z"
   },
   "genres/action": {
     "hash": "bac51e42",
