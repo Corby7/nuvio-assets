@@ -63,11 +63,11 @@
     "updatedAt": "2026-11-17T12:54:29.147Z"
   },
   "discover/trending-shows": {
-    "hash": "67e01d35",
+    "hash": "def2a7e7",
     "folder": "‎Discover > Trending Shows",
     "images": 60,
-    "bytes": 230794,
-    "updatedAt": "2026-11-17T12:52:21.400Z"
+    "bytes": 252840,
+    "updatedAt": "2026-11-18T12:45:22.012Z"
   },
   "discover/trending-movies": {
     "hash": "7bf97be0",
@@ -77,18 +77,18 @@
     "updatedAt": "2026-11-17T12:52:31.385Z"
   },
   "discover/popular-shows": {
-    "hash": "1f6114e3",
+    "hash": "60e1bb6b",
     "folder": "‎Discover > Popular Shows",
     "images": 60,
-    "bytes": 311006,
-    "updatedAt": "2026-11-17T12:52:38.714Z"
+    "bytes": 286148,
+    "updatedAt": "2026-11-18T12:45:29.519Z"
   },
   "discover/popular-movies": {
-    "hash": "5c7cc9bb",
+    "hash": "cf715573",
     "folder": "‎Discover > Popular Movies",
     "images": 60,
-    "bytes": 258226,
-    "updatedAt": "2026-11-17T12:52:42.508Z"
+    "bytes": 267338,
+    "updatedAt": "2026-11-18T12:45:33.782Z"
   },
   "discover/top-rated": {
     "hash": "38dbe1a1",
@@ -98,18 +98,18 @@
     "updatedAt": "2026-11-16T12:31:36.542Z"
   },
   "discover/coming-soon-shows": {
-    "hash": "5a10f5f5",
+    "hash": "667c8706",
     "folder": "‎Discover > Coming Soon Shows",
-    "images": 33,
-    "bytes": 241072,
-    "updatedAt": "2026-11-17T12:53:00.456Z"
+    "images": 35,
+    "bytes": 249724,
+    "updatedAt": "2026-11-18T12:45:52.389Z"
   },
   "discover/coming-soon-movies": {
-    "hash": "d029c307",
+    "hash": "e523fb6f",
     "folder": "‎Discover > Coming Soon Movies",
     "images": 60,
-    "bytes": 286904,
-    "updatedAt": "2026-11-17T12:53:04.350Z"
+    "bytes": 286690,
+    "updatedAt": "2026-11-18T12:45:57.035Z"
   },
   "genres/action": {
     "hash": "8828e7ad",
