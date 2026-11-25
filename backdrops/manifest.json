@@ -98,18 +98,18 @@
     "updatedAt": "2026-11-24T14:39:43.108Z"
   },
   "discover/coming-soon-shows": {
-    "hash": "644a975a",
+    "hash": "79d3bede",
     "folder": "‎Discover > Coming Soon Shows",
-    "images": 39,
-    "bytes": 249000,
-    "updatedAt": "2026-11-24T14:39:48.623Z"
+    "images": 38,
+    "bytes": 248854,
+    "updatedAt": "2026-11-25T13:59:47.870Z"
   },
   "discover/coming-soon-movies": {
-    "hash": "e82b13f1",
+    "hash": "d1918e73",
     "folder": "‎Discover > Coming Soon Movies",
     "images": 60,
-    "bytes": 294754,
-    "updatedAt": "2026-11-24T14:39:53.134Z"
+    "bytes": 294826,
+    "updatedAt": "2026-11-25T13:59:53.599Z"
   },
   "genres/action": {
     "hash": "2e3feb5e",
